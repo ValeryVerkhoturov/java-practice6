@@ -7,6 +7,6 @@ public record Employee(
         String firstName,
         String pathronymic,
         String lastName,
-        Date birthDay,
+        Date birthDate,
         String position,
         List<Task> tasks){}

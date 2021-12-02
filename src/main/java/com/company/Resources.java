@@ -126,48 +126,39 @@ public class Resources {
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
         tasks = bufferedReader.lines().toList();
     }
-    
-    @SneakyThrows
+
     public String getRandomMaleFirstName(){
         return maleFirstNames.get(ThreadLocalRandom.current().nextInt(0, maleFirstNames.size()));
     }
 
-    @SneakyThrows
     public String getRandomMalePatronymic(){
         return malePatronymics.get(ThreadLocalRandom.current().nextInt(0, malePatronymics.size()));
     }
 
-    @SneakyThrows
     public String getRandomMaleLastName(){
         return maleLastNames.get(ThreadLocalRandom.current().nextInt(0, maleLastNames.size()));
     }
 
-    @SneakyThrows
     public String getRandomFemaleFirstName(){
         return femaleFirstNames.get(ThreadLocalRandom.current().nextInt(0, femaleFirstNames.size()));
     }
 
-    @SneakyThrows
     public String getRandomFemalePatronymic(){
         return femalePatronymics.get(ThreadLocalRandom.current().nextInt(0, femalePatronymics.size()));
     }
 
-    @SneakyThrows
     public String getRandomFemaleLastName(){
         return femaleLastNames.get(ThreadLocalRandom.current().nextInt(0, femaleLastNames.size()));
     }
 
-    @SneakyThrows
     public String getRandomCity(){
         return cities.get(ThreadLocalRandom.current().nextInt(0, cities.size()));
     }
 
-    @SneakyThrows
     public String getRandomPosition(){
         return positions.get(ThreadLocalRandom.current().nextInt(0, positions.size()));
     }
 
-    @SneakyThrows
     public String getRandomTask(){
         return tasks.get(ThreadLocalRandom.current().nextInt(0, tasks.size()));
     }
