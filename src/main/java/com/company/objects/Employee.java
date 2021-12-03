@@ -1,7 +1,7 @@
 package com.company.objects;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 public record Employee(String firstName,
                        String pathronymic,
@@ -9,4 +9,4 @@ public record Employee(String firstName,
                        Date birthDate,
                        String city,
                        String position,
-                       List<Task> tasks){}
+                       Optional<Task> task){}

@@ -1,11 +1,13 @@
 package com.company.objects;
 
+import com.company.Constants;
 import com.company.Resources;
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
+import java.time.Period;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
@@ -24,49 +26,51 @@ public class Factory {
                     Resources.getRandomMaleFirstName(), Resources.getRandomMalePatronymic(),
                     Resources.getRandomMaleLastName(), getRandomDate(),
                     Resources.getRandomCity(), Resources.getRandomPosition(),
-                    new ArrayList<>());
+                    Optional.empty());
 
         return new Employee(
                 Resources.getRandomFemaleFirstName(), Resources.getRandomFemalePatronymic(),
                 Resources.getRandomFemaleLastName(), getRandomDate(),
                 Resources.getRandomCity(), Resources.getRandomPosition(),
-                new ArrayList<>());
+                Optional.empty());
     }
 
     public List<Employee> getRandomEmployees(){
-        return IntStream
-                .range(Integer.parseInt(Resources.getProperty("minEmployeesRandomAmmount")),
-                        Integer.parseInt(Resources.getProperty("maxEmployeesRandomAmmount")))
-                .mapToObj(i -> getRandomEmployee())
-                .toList();
-    }
-
-    private Date getRandomTimeLimit(Date startDate){
-        long delta = ThreadLocalRandom.current().nextLong(
-                Integer.parseInt(Resources.getProperty("minDaysForTask")),
-                Integer.parseInt(Resources.getProperty("maxDaysForTask"))) * 24 * 60 * 60 * 1000;
-        return new Date(startDate.getTime() + delta);
+    return IntStream
+            .range(0, ThreadLocalRandom.current().nextInt(
+                    Constants.MIN_EMPLOYEE_AMMOUNT.getPoints(),
+                    Constants.MAX_EMPLOEE_AMMOUNT.getPoints()))
+            .mapToObj(i -> getRandomEmployee())
+            .toList();
     }
 
     private int getRandomPrice(){
         return ThreadLocalRandom.current().nextInt(
-                Integer.parseInt(Resources.getProperty("minTaskPrice")),
-                Integer.parseInt(Resources.getProperty("maxTaskPrice")));
+                Constants.MIN_TASK_PRICE.getPoints(),
+                Constants.MAX_TASK_PRICE.getPoints());
     }
 
-    public Task getRandomTask(Date startDate){
-        return new Task(Resources.getRandomTask(), startDate, getRandomTimeLimit(startDate), getRandomPrice(), false);
+    private Period getRandomPeriod(){
+        return Period.ofDays(ThreadLocalRandom.current().nextInt(
+                Constants.MIN_DAYS_FOR_TASK.getPoints(),
+                Constants.MAX_DAYS_FOR_TASK.getPoints()));
     }
 
-    public List<Task> getRandomTasks(Date startDate){
+    public Task getRandomTask(){
+        return new Task(Resources.getRandomTask(), getRandomPeriod(),
+                getRandomPrice(), TaskStatus.WAITING, Optional.empty());
+    }
+
+    public List<Task> getRandomTasks(){
         return IntStream
-                .range(Integer.parseInt(Resources.getProperty("minTasksRandomAmmount")),
-                        Integer.parseInt(Resources.getProperty("maxTasksRandomAmmount")))
-                .mapToObj(i -> getRandomTask(startDate))
+                .range(0, ThreadLocalRandom.current().nextInt(
+                        Constants.MIN_TASK_AMMOUNT.getPoints(),
+                        Constants.MAX_TASK_AMMOUNT.getPoints()))
+                .mapToObj(i -> getRandomTask())
                 .toList();
     }
 
-    public Company getRandomCompany(Date startDate){
-        return new Company(Resources.getRandomCompanyName(), getRandomEmployees(), getRandomTasks(startDate));
+    public Company getRandomCompany(){
+        return new Company(Resources.getRandomCompanyName(), getRandomEmployees(), getRandomTasks());
     }
 }

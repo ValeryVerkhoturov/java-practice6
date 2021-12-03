@@ -1,5 +1,10 @@
 package com.company.objects;
 
-import java.util.Date;
+import java.time.Period;
+import java.util.Optional;
 
-public record Task(String description, Date start, Date finish, int price, boolean isCompleted){}
+public record Task(String description,
+                   Period period,
+                   int price,
+                   TaskStatus status,
+                   Optional<Employee> employee){}
