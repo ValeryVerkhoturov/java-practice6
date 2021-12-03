@@ -3,6 +3,7 @@ package com.company;
 import lombok.Getter;
 
 public enum Constants {
+
     MIN_DAYS_FOR_TASK(1),
     MAX_DAYS_FOR_TASK(30),
 
