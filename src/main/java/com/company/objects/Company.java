@@ -1,6 +1,5 @@
 package com.company.objects;
 
 import java.util.List;
-import java.util.Queue;
 
-public record Company(List<Employee> employees, Queue<Task> tasks){}
+public record Company(String name, List<Employee> employees, List<Task> tasks){}

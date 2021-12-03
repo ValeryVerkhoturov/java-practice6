@@ -37,6 +37,8 @@ public class Resources {
 
     List<String> tasks;
 
+    List<String> companyNames;
+
     static {
         try {
             @Cleanup
@@ -54,6 +56,7 @@ public class Resources {
             readCitiesResources();
             readPositionsResources();
             readTasksResources();
+            readCompanyNames();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -127,6 +130,13 @@ public class Resources {
         tasks = bufferedReader.lines().toList();
     }
 
+    @SneakyThrows
+    private void readCompanyNames(){
+        @Cleanup FileReader fileReader = new FileReader(properties.getProperty("companyNamesResourcesPath"));
+        @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
+        companyNames = bufferedReader.lines().toList();
+    }
+
     public String getRandomMaleFirstName(){
         return maleFirstNames.get(ThreadLocalRandom.current().nextInt(0, maleFirstNames.size()));
     }
@@ -161,5 +171,9 @@ public class Resources {
 
     public String getRandomTask(){
         return tasks.get(ThreadLocalRandom.current().nextInt(0, tasks.size()));
+    }
+
+    public String getRandomCompanyName(){
+        return companyNames.get(ThreadLocalRandom.current().nextInt(0, companyNames.size()));
     }
 }
