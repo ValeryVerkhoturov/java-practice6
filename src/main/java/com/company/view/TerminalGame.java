@@ -10,16 +10,17 @@ import lombok.SneakyThrows;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class TerminalGame implements Runnable{
 
+    private final Company company = Factory.getRandomCompany();
+
     private static final String separator = Resources.getProperty("separator");
 
     private TerminalCommand terminalCommand = TerminalCommand.START;
-
-    private final Company company = Factory.getRandomCompany();
 
     @Override
     public void run() {
@@ -50,6 +51,20 @@ public class TerminalGame implements Runnable{
 
     @SneakyThrows
     private TerminalCommand loop(){
+        System.out.println(separator);
+        executeCommand();
+        if (terminalCommand != TerminalCommand.START)
+            System.out.println(separator);
+
+        printCompanyStatistics();
+        System.out.println(separator);
+
+        printCommands();
+
+        return readTerminalCommand();
+    }
+
+    private void executeCommand(){
         switch (terminalCommand){
             case START -> {}
 
@@ -57,12 +72,12 @@ public class TerminalGame implements Runnable{
             case PASS_15_DAYS -> pass15days();
             case PASS_30_DAYS -> pass30days();
 
-            case ADD_NEW_EMLOYEE_FROM_CONSOLE -> addNewEmloyeeFromConsole();
+            case ADD_NEW_EMPLOYEE_FROM_CONSOLE -> addNewEmployeeFromConsole();
             case ADD_NEW_RANDOM_EMPLOYEE -> addNewRandomEmployee();
             case ADD_NEW_RANDOM_TASK -> addNewRandomTask();
 
             case SHOW_EMLOYEE_LIST -> showEmployeeList();
-            case SHOW_UNCOMPLETED_TASKS -> showUncomletedTasks();
+            case SHOW_UNCOMPLETED_TASKS -> showUncompletedTasks();
             case SHOW_COMPLETED_TASKS -> showComletedTasks();
 
             case SHOW_TOP_3_EFFECTIVE_EMPLOYEES -> showTop3EffectiveEmployees();
@@ -72,18 +87,20 @@ public class TerminalGame implements Runnable{
             case LOAD_PROGRESS -> loadProgress();
 
             default -> unknownCommand();
-
         }
-        System.out.println(separator);
-        printCompanyStatistics();
-        System.out.println(separator);
-        printCommands();
-        System.out.print("> ");
-        int code = new Scanner(System.in).nextInt();
-        return Arrays.stream(TerminalCommand.values())
-                .filter(cmd -> cmd.getCode() == code)
-                .findFirst()
-                .orElse(TerminalCommand.UNKNOWN);
+    }
+
+    private TerminalCommand readTerminalCommand(){
+        try{
+            System.out.print("> ");
+            int code = new Scanner(System.in).nextInt();
+            return Arrays.stream(TerminalCommand.values())
+                    .filter(cmd -> cmd.getCode() == code)
+                    .findFirst()
+                    .orElse(TerminalCommand.UNKNOWN);
+        } catch (InputMismatchException e){
+            return TerminalCommand.UNKNOWN;
+        }
     }
 
     private void pass1day() {
@@ -95,7 +112,7 @@ public class TerminalGame implements Runnable{
     private void pass30days() {
     }
 
-    private void addNewEmloyeeFromConsole() {
+    private void addNewEmployeeFromConsole() {
     }
 
     private void addNewRandomEmployee() {
@@ -105,12 +122,17 @@ public class TerminalGame implements Runnable{
     }
 
     private void showEmployeeList() {
+        CuteTable.printfEmployeeTable(company.employees());
     }
 
-    private void showUncomletedTasks() {
+    private void showUncompletedTasks() {
+        company.tasks().stream().filter(task -> task.status() != TaskStatus.IS_COMPLETED).forEach(System.out::println);
     }
 
     private void showComletedTasks() {
+        company.tasks().stream()
+                .filter(task -> task.status() == TaskStatus.IS_COMPLETED)
+                .forEach(System.out::println);
     }
 
     private void showTop3EffectiveEmployees() {
@@ -126,10 +148,11 @@ public class TerminalGame implements Runnable{
     }
 
     private void unknownCommand(){
+        System.out.println("Сам понял, что написал?");
     }
 
     @SneakyThrows
-    private void printCompanyStatistics(){
+    private synchronized void printCompanyStatistics(){
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("companyStatisticsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
         System.out.printf(bufferedReader.lines().collect(Collectors.joining("\n")) + "\n",
@@ -143,7 +166,7 @@ public class TerminalGame implements Runnable{
     }
 
     @SneakyThrows
-    private void printCommands(){
+    private synchronized void printCommands(){
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("commandsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
         System.out.println(bufferedReader.lines().collect(Collectors.joining("\n")));
