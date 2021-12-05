@@ -78,7 +78,7 @@ public class TerminalGame implements Runnable{
 
             case SHOW_EMLOYEE_LIST -> showEmployeeList();
             case SHOW_UNCOMPLETED_TASKS -> showUncompletedTasks();
-            case SHOW_COMPLETED_TASKS -> showComletedTasks();
+            case SHOW_COMPLETED_TASKS -> showCompletedTasks();
 
             case SHOW_TOP_3_EFFECTIVE_EMPLOYEES -> showTop3EffectiveEmployees();
             case SHOW_TASK_WITH_TOP_PRICE -> showTaskWithTopPrice();
@@ -116,6 +116,7 @@ public class TerminalGame implements Runnable{
     }
 
     private void addNewRandomEmployee() {
+
     }
 
     private void addNewRandomTask() {
@@ -126,19 +127,20 @@ public class TerminalGame implements Runnable{
     }
 
     private void showUncompletedTasks() {
-        company.tasks().stream().filter(task -> task.status() != TaskStatus.IS_COMPLETED).forEach(System.out::println);
+        CuteTable.printfTaskTable(
+                company.tasks().stream().filter(task -> task.status() != TaskStatus.IS_COMPLETED).toList());
     }
 
-    private void showComletedTasks() {
-        company.tasks().stream()
-                .filter(task -> task.status() == TaskStatus.IS_COMPLETED)
-                .forEach(System.out::println);
+    private void showCompletedTasks() {
+        CuteTable.printfTaskTable(
+                company.tasks().stream().filter(task -> task.status() == TaskStatus.IS_COMPLETED).toList());
     }
 
     private void showTop3EffectiveEmployees() {
     }
 
     private void showTaskWithTopPrice() {
+
     }
 
     private void saveProgress() {
