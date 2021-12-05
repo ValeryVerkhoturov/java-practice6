@@ -2,7 +2,9 @@ package com.company.objects;
 
 import lombok.Getter;
 
-public enum TaskStatus {
+import java.io.Serializable;
+
+public enum TaskStatus implements Serializable {
     WAITING("Ожидание"),
     IN_PROGRESS("В процессе"),
     IS_COMPLETED("Завершено");

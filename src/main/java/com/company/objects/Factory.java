@@ -26,13 +26,13 @@ public class Factory {
                     Resources.getRandomMaleFirstName(), Resources.getRandomMalePatronymic(),
                     Resources.getRandomMaleLastName(), getRandomDate(),
                     Resources.getRandomCity(), Resources.getRandomPosition(),
-                    Optional.empty());
+                    null);
 
         return new Employee(
                 Resources.getRandomFemaleFirstName(), Resources.getRandomFemalePatronymic(),
                 Resources.getRandomFemaleLastName(), getRandomDate(),
                 Resources.getRandomCity(), Resources.getRandomPosition(),
-                Optional.empty());
+                null);
     }
 
     public List<Employee> getRandomEmployees(){
@@ -58,7 +58,7 @@ public class Factory {
 
     public Task getRandomTask(){
         return new Task(Resources.getRandomTask(), getRandomPeriod(),
-                getRandomPrice(), TaskStatus.WAITING, Optional.empty());
+                getRandomPrice(), TaskStatus.WAITING, null);
     }
 
     public List<Task> getRandomTasks(){

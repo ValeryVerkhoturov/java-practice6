@@ -67,10 +67,10 @@ public class CuteTable {
     private void printfEmployeeTableTail(List<Employee> employees, String format, SimpleDateFormat dateFormat){
         for (Employee employee : employees) {
             String task;
-            if (employee.task().isEmpty())
+            if (employee.task() == null)
                 task = "Задания нет";
             else
-                task = employee.task().get().description();
+                task = employee.task().description();
 
             System.out.printf(format + "\n",
                     cutLongOutput(employee.firstName(), SPACE_EMPLOYEE_FIRST_NAME),
@@ -101,11 +101,11 @@ public class CuteTable {
     private void printfTaskTableTail(List<Task> tasks, String format){
         for (Task task : tasks) {
             String employee;
-            if (task.employee().isEmpty())
+            if (task.employee() == null)
                 employee = "Не назначен";
             else
-                employee = task.employee().get().lastName() + " " +
-                        task.employee().get().firstName().charAt(0) + ".";
+                employee = task.employee().lastName() + " " +
+                        task.employee().firstName().charAt(0) + ".";
 
             System.out.printf(format + "\n",
                     cutLongOutput(task.description(), SPACE_TASK_DESCRIPTION),

@@ -7,8 +7,7 @@ import com.company.objects.TaskStatus;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TerminalGame implements Runnable{
 
-    private final Company company = Factory.getRandomCompany();
+    private Company company = Factory.getRandomCompany();
 
     private static final String separator = Resources.getProperty("separator");
 
@@ -143,10 +142,30 @@ public class TerminalGame implements Runnable{
 
     }
 
-    private void saveProgress() {
+    @SneakyThrows
+    private synchronized void saveProgress() {
+        File file = new File(Resources.getProperty("savePath"));
+        if (file.exists())
+            file.delete();
+        file.createNewFile();
+        @Cleanup FileOutputStream fileOutputStream = new FileOutputStream(file);
+        @Cleanup ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(company);
+        objectOutputStream.flush();
+        System.out.println("Сохранение прошло успешно.");
     }
 
-    private void loadProgress() {
+    @SneakyThrows
+    private synchronized void loadProgress() {
+        File file = new File(Resources.getProperty("savePath"));
+        if (!file.exists()){
+            System.out.println("Сохранение не существует.");
+            return;
+        }
+        @Cleanup FileInputStream fileInputStream  = new FileInputStream(file);
+        @Cleanup ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        company = (Company) objectInputStream.readObject();
+        System.out.println("Загрузка прошла успешно.");
     }
 
     private void unknownCommand(){

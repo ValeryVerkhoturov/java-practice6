@@ -3,11 +3,12 @@ package com.company.objects;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.time.Period;
 import java.util.Optional;
 
 public record Task(String description, Period period, int price,
-                   TaskStatus status, Optional<Employee> employee){
+                   TaskStatus status, Employee employee) implements Serializable {
 
     public static class FieldNames{
         public final static String description = "Описание";

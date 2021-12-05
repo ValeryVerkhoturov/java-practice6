@@ -4,11 +4,12 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
 
 public record Employee(String firstName, String patronymic, String lastName, Date birthDate,
-                       String city, String position, Optional<Task> task){
+                       String city, String position, Task task) implements Serializable {
 
     public static class FieldNames {
         public final static String firstName = "Имя";
