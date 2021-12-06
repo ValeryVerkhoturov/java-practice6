@@ -31,14 +31,3 @@ public class Task implements Serializable {
         return employee;
     }
 }
-//public record Task(String description, Period period, int price,
-//                   TaskStatus status, Employee employee) implements Serializable {
-//
-//    public static class FieldNames{
-//        public final static String description = "Описание";
-//        public final static String period = "Время выполнения";
-//        public final static String price = "Вознаграждение";
-//        public final static String status = "Статус";
-//        public final static String employee = "Прикрепленный работник";
-//    }
-//}

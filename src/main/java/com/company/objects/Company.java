@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Period;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Data
@@ -19,6 +19,8 @@ public class Company implements Serializable {
 
     @NonNull
     List<Task> tasks;
+
+    Map<Employee, List<Period>> employeesEfficiency = new HashMap<>();
 
     public void addEmployee(Employee employee){
         if (!(employees instanceof ArrayList))
@@ -49,6 +51,10 @@ public class Company implements Serializable {
                             Task task = employee.getTask();
                             task.setStatus(TaskStatus.IS_COMPLETED);
                             employee.setTask(NullTask.getInstance());
+
+                            List<Period> employeeEfficiency = employeesEfficiency.getOrDefault(employee, new ArrayList<>());
+                            employeeEfficiency.add(Period.ZERO);
+                            employeesEfficiency.put(employee, employeeEfficiency);
                         }
                 );
     }

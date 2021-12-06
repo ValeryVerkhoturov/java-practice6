@@ -8,7 +8,7 @@ public class NullTask extends Task{
 
     private NullTask() {
         super("No task",
-                Period.of(0, 0, 0),
+                Period.ZERO,
                 0,
                 TaskStatus.NOT_EXISTS);
     }

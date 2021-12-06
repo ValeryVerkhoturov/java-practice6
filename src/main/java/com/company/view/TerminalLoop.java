@@ -1,16 +1,14 @@
 package com.company.view;
 
 import com.company.Resources;
-import com.company.objects.Company;
-import com.company.objects.Factory;
-import com.company.objects.TaskStatus;
+import com.company.objects.*;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TerminalLoop implements Runnable{
@@ -107,16 +105,47 @@ public class TerminalLoop implements Runnable{
         System.out.println("Прошло дней: " + days);
     }
 
+    @SneakyThrows
     private void addNewEmployeeFromConsole() {
+        Scanner scanner = new Scanner(System.in);
+        Employee.EmployeeBuilder employeeBuilder = Employee.builder();
+
+        System.out.print(Employee.Fields.firstName + "> ");
+        employeeBuilder.firstName(scanner.nextLine());
+
+        System.out.print(Employee.Fields.patronymic + "> ");
+        employeeBuilder.patronymic(scanner.nextLine());
+
+        System.out.print(Employee.Fields.lastName + "> ");
+        employeeBuilder.lastName(scanner.nextLine());
+
+        Date birthDate = null;
+        while (birthDate == null)
+            try{
+                System.out.println("Пример даты: ДД MM ГГГГ");
+                System.out.print(Employee.Fields.birthDate + "> ");
+                birthDate = new SimpleDateFormat("dd MM yyyy").parse(scanner.nextLine());
+            } catch (ParseException ignore){}
+        employeeBuilder.birthDate(birthDate);
+
+        System.out.print(Employee.Fields.city + "> ");
+        employeeBuilder.city(scanner.nextLine());
+
+        System.out.print(Employee.Fields.position + "> ");
+        employeeBuilder.position(scanner.nextLine());
+
+        employeeBuilder.task(NullTask.getInstance());
+
+        company.addEmployee(employeeBuilder.build());
     }
 
     private void addNewRandomEmployee() {
-        System.out.println("Добавлен случайный сотрудник");
+        System.out.println("Добавлен сотрудник со случайными полями.");
         company.addEmployee(Factory.getRandomEmployee());
     }
 
     private void addNewRandomTask() {
-        System.out.println("Добавлена случайная задача");
+        System.out.println("Добавлена случайная задача.");
         company.addTask(Factory.getRandomTask());
     }
 
@@ -135,19 +164,21 @@ public class TerminalLoop implements Runnable{
     }
 
     private void showTop3EffectiveEmployees() {
+        //TODO
     }
 
     private void showTaskWithTopPrice() {
-
+        CuteTable.printfTaskTable(company.getTasks().stream().max(Comparator.comparing(Task::getPrice)).orElse(NullTask.getInstance()));
     }
 
     @SneakyThrows
     private synchronized void saveProgress() {
         File file = new File(Resources.getProperty("savePath"));
-        if (!file.createNewFile()){
-            System.out.println("Не удалось сохранить прогресс");
-            return;
-        }
+        while (!file.createNewFile())
+            if (!file.delete()) {
+                System.out.println("Не удалось сохранить прогресс.");
+                return;
+            }
 
         @Cleanup FileOutputStream fileOutputStream = new FileOutputStream(file, false);
         @Cleanup ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);

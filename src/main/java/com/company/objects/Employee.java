@@ -1,5 +1,6 @@
 package com.company.objects;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.FieldNameConstants;
@@ -9,6 +10,7 @@ import java.util.Date;
 
 @Data
 @FieldNameConstants
+@Builder
 public class Employee implements Serializable {
     @NonNull
     String firstName;
