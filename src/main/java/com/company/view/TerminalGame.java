@@ -67,9 +67,9 @@ public class TerminalGame implements Runnable{
         switch (terminalCommand){
             case START -> {}
 
-            case PASS_1_DAY -> pass1day();
-            case PASS_15_DAYS -> pass15days();
-            case PASS_30_DAYS -> pass30days();
+            case PASS_1_DAY -> passNDays(1);
+            case PASS_15_DAYS -> passNDays(15);
+            case PASS_30_DAYS -> passNDays(30);
 
             case ADD_NEW_EMPLOYEE_FROM_CONSOLE -> addNewEmployeeFromConsole();
             case ADD_NEW_RANDOM_EMPLOYEE -> addNewRandomEmployee();
@@ -102,24 +102,22 @@ public class TerminalGame implements Runnable{
         }
     }
 
-    private void pass1day() {
-        
-    }
-
-    private void pass15days() {
-    }
-
-    private void pass30days() {
+    private void passNDays(int days) {
+        company.passNDays(days);
+        System.out.println("Прошло дней: " + days);
     }
 
     private void addNewEmployeeFromConsole() {
     }
 
     private void addNewRandomEmployee() {
-
+        System.out.println("Добавлен случайный сотрудник");
+        company.addEmployee(Factory.getRandomEmployee());
     }
 
     private void addNewRandomTask() {
+        System.out.println("Добавлена случайная задача");
+        company.addTask(Factory.getRandomTask());
     }
 
     private void showEmployeeList() {

@@ -8,7 +8,7 @@ import java.time.Period;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @UtilityClass
 public class Factory {
@@ -35,11 +35,10 @@ public class Factory {
     }
 
     public List<Employee> getRandomEmployees(){
-    return IntStream
-            .range(0, ThreadLocalRandom.current().nextInt(
+    return Stream.generate(Factory::getRandomEmployee)
+            .limit(ThreadLocalRandom.current().nextInt(
                     Constants.MIN_EMPLOYEE_AMMOUNT.getPoints(),
                     Constants.MAX_EMPLOEE_AMMOUNT.getPoints()))
-            .mapToObj(i -> getRandomEmployee())
             .toList();
     }
 
@@ -61,11 +60,10 @@ public class Factory {
     }
 
     public List<Task> getRandomTasks(){
-        return IntStream
-                .range(0, ThreadLocalRandom.current().nextInt(
+        return Stream.generate(Factory::getRandomTask)
+                .limit(ThreadLocalRandom.current().nextInt(
                         Constants.MIN_TASK_AMMOUNT.getPoints(),
                         Constants.MAX_TASK_AMMOUNT.getPoints()))
-                .mapToObj(i -> getRandomTask())
                 .toList();
     }
 
