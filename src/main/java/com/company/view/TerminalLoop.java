@@ -13,7 +13,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class TerminalGame implements Runnable{
+public class TerminalLoop implements Runnable{
 
     private Company company = Factory.getRandomCompany();
 

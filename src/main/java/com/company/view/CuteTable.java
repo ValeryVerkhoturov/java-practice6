@@ -28,8 +28,7 @@ public class CuteTable {
     int SPACE_TASK_PERIOD = 7;
     int SPACE_TASK_PRICE = 6;
     int SPACE_TASK_STATUS = 10;
-    int SAPCE_TASK_EMPLOYEE = 15;
-
+    int SPACE_TASK_EMPLOYEE = 15;
 
     String FORMAT_EMPLOYEE_FIRST_NAME = "%-" + SPACE_EMPLOYEE_FIRST_NAME + "s";
     String FORMAT_EMPLOYEE_PATRONYMIC = "%-" + SPACE_EMPLOYEE_PATRONYMIC + "s";
@@ -43,64 +42,64 @@ public class CuteTable {
     String FORMAT_TASK_PERIOD = "%-" + SPACE_TASK_PERIOD + "s";
     String FORMAT_TASK_PRICE = "%-" + SPACE_TASK_PRICE + "s";
     String FORMAT_TASK_STATUS = "%-" + SPACE_TASK_STATUS + "s";
-    String FORMAT_TASK_EMPLOYEE = "%-" + SAPCE_TASK_EMPLOYEE + "s";
+    String FORMAT_TASK_EMPLOYEE = "%-" + SPACE_TASK_EMPLOYEE + "s";
 
+    String FORMAT_EMPLOYEE_TABLE = "%s%s%s%s%s%s%s".formatted(
+            FORMAT_EMPLOYEE_FIRST_NAME, FORMAT_EMPLOYEE_PATRONYMIC, FORMAT_EMPLOYEE_LAST_NAME,
+            FORMAT_EMPLOYEE_BIRTH_DATE, FORMAT_EMPLOYEE_CITY, FORMAT_EMPLOYEE_POSITION,
+            FORMAT_EMPLOYEE_TASK);
+    String FORMAT_TASK_TABLE = "%s%s%s%s%s".formatted(
+            FORMAT_TASK_DESCRIPTION, FORMAT_TASK_PERIOD, FORMAT_TASK_PRICE,
+            FORMAT_TASK_STATUS, FORMAT_TASK_EMPLOYEE);
 
-    @SneakyThrows
+    SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("dd/MM/yyyy");
+
     public void printfEmployeeTable(List<Employee> employees){
-        final String format = "%s%s%s%s%s%s%s".formatted(
-                FORMAT_EMPLOYEE_FIRST_NAME, FORMAT_EMPLOYEE_PATRONYMIC, FORMAT_EMPLOYEE_LAST_NAME,
-                FORMAT_EMPLOYEE_BIRTH_DATE, FORMAT_EMPLOYEE_CITY, FORMAT_EMPLOYEE_POSITION,
-                FORMAT_EMPLOYEE_TASK);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        printfEmployeeTableHead(format);
-        printfEmployeeTableTail(employees, format, dateFormat);
+        printfEmployeeTableHead();
+        employees.forEach(CuteTable::printfEmployeeTableRow);
     }
 
-    private void printfEmployeeTableHead(String format){
-        System.out.printf((format) + "\n",
+    public void printfEmployeeTable(Employee employee){
+        printfEmployeeTableHead();
+        printfEmployeeTableRow(employee);
+    }
+
+    private void printfEmployeeTableHead(){
+        System.out.printf(FORMAT_EMPLOYEE_TABLE + "\n",
                 Employee.Fields.firstName, Employee.Fields.patronymic, Employee.Fields.lastName,
                 Employee.Fields.birthDate, Employee.Fields.city, Employee.Fields.position,
                 Employee.Fields.task);
     }
 
-    private void printfEmployeeTableTail(List<Employee> employees, String format, SimpleDateFormat dateFormat){
-        for (Employee employee : employees) {
-            String task;
-            if (employee.getTask() instanceof NullTask)
-                task = "Задания нет";
-            else
-                task = employee.getTask().getDescription();
+    private void printfEmployeeTableRow(Employee employee){
+        String task;
+        if (employee.getTask() instanceof NullTask)
+            task = "Задания нет";
+        else
+            task = employee.getTask().getDescription();
 
-            System.out.printf(format + "\n",
-                    cutLongOutput(employee.getFirstName(), SPACE_EMPLOYEE_FIRST_NAME),
-                    cutLongOutput(employee.getPatronymic(), SPACE_EMPLOYEE_PATRONYMIC),
-                    cutLongOutput(employee.getLastName(), SPACE_EMPLOYEE_LAST_NAME),
-                    cutLongOutput(dateFormat.format(employee.getBirthDate()), SPACE_EMPLOYEE_BIRTH_DATE),
-                    cutLongOutput(employee.getCity(), SPACE_EMPLOYEE_CITY),
-                    cutLongOutput(employee.getPosition(), SPACE_EMPLOYEE_POSITION),
-                    cutLongOutput(task, SPACE_EMPLOYEE_TASK));
-        }
+        System.out.printf(FORMAT_EMPLOYEE_TABLE + "\n",
+                cutLongOutput(employee.getFirstName(), SPACE_EMPLOYEE_FIRST_NAME),
+                cutLongOutput(employee.getPatronymic(), SPACE_EMPLOYEE_PATRONYMIC),
+                cutLongOutput(employee.getLastName(), SPACE_EMPLOYEE_LAST_NAME),
+                cutLongOutput(FORMAT_DATE.format(employee.getBirthDate()), SPACE_EMPLOYEE_BIRTH_DATE),
+                cutLongOutput(employee.getCity(), SPACE_EMPLOYEE_CITY),
+                cutLongOutput(employee.getPosition(), SPACE_EMPLOYEE_POSITION),
+                cutLongOutput(task, SPACE_EMPLOYEE_TASK));
     }
 
     public void printfTaskTable(List<Task> tasks){
-        final String format = "%s%s%s%s%s".formatted(
-                FORMAT_TASK_DESCRIPTION, FORMAT_TASK_PERIOD, FORMAT_TASK_PRICE,
-                FORMAT_TASK_STATUS, FORMAT_TASK_EMPLOYEE);
-
-       printfTaskTableHead(format);
-       printfTaskTableTail(tasks, format);
+       printfTaskTableHead();
+       printfTaskTableTail(tasks);
     }
 
-    private void printfTaskTableHead(String format){
-        System.out.printf((format) + "\n",
+    private void printfTaskTableHead(){
+        System.out.printf(FORMAT_TASK_TABLE + "\n",
                 Task.Fields.description, Task.Fields.period, Task.Fields.price,
                 Task.Fields.status, Task.Fields.employee);
     }
 
-    private void printfTaskTableTail(List<Task> tasks, String format){
+    private void printfTaskTableTail(List<Task> tasks){
         for (Task task : tasks) {
             String employee;
             if (task.getEmployee() instanceof NullEmployee)
@@ -109,12 +108,12 @@ public class CuteTable {
                 employee = task.getEmployee().getLastName() + " " +
                         task.getEmployee().getFirstName().charAt(0) + ".";
 
-            System.out.printf(format + "\n",
+            System.out.printf(FORMAT_TASK_TABLE + "\n",
                     cutLongOutput(task.getDescription(), SPACE_TASK_DESCRIPTION),
                     cutLongOutput(task.getPeriod().getDays() + " д.", SPACE_TASK_PERIOD),
                     task.getPrice(),
                     cutLongOutput(task.getStatus().name(), SPACE_TASK_STATUS),
-                    cutLongOutput(employee, SAPCE_TASK_EMPLOYEE)
+                    cutLongOutput(employee, SPACE_TASK_EMPLOYEE)
             );
         }
     }
