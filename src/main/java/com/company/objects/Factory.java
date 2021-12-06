@@ -7,7 +7,6 @@ import lombok.experimental.UtilityClass;
 import java.time.Period;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
@@ -26,13 +25,13 @@ public class Factory {
                     Resources.getRandomMaleFirstName(), Resources.getRandomMalePatronymic(),
                     Resources.getRandomMaleLastName(), getRandomDate(),
                     Resources.getRandomCity(), Resources.getRandomPosition(),
-                    null);
+                    NullTask.getInstance());
 
         return new Employee(
                 Resources.getRandomFemaleFirstName(), Resources.getRandomFemalePatronymic(),
                 Resources.getRandomFemaleLastName(), getRandomDate(),
                 Resources.getRandomCity(), Resources.getRandomPosition(),
-                null);
+                NullTask.getInstance());
     }
 
     public List<Employee> getRandomEmployees(){
@@ -58,7 +57,7 @@ public class Factory {
 
     public Task getRandomTask(){
         return new Task(Resources.getRandomTask(), getRandomPeriod(),
-                getRandomPrice(), TaskStatus.WAITING, null);
+                getRandomPrice(), TaskStatus.WAITING);
     }
 
     public List<Task> getRandomTasks(){

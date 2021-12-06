@@ -43,7 +43,7 @@ public class TerminalGame implements Runnable{
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
 
         System.out.printf(bufferedReader.lines().collect(Collectors.joining("\n")),
-                Resources.getRandomMaleFirstName(), company.name());
+                Resources.getRandomMaleFirstName(), company.getName());
 
         new Scanner(System.in).nextLine();
     }
@@ -103,6 +103,7 @@ public class TerminalGame implements Runnable{
     }
 
     private void pass1day() {
+        
     }
 
     private void pass15days() {
@@ -122,17 +123,17 @@ public class TerminalGame implements Runnable{
     }
 
     private void showEmployeeList() {
-        CuteTable.printfEmployeeTable(company.employees());
+        CuteTable.printfEmployeeTable(company.getEmployees());
     }
 
     private void showUncompletedTasks() {
         CuteTable.printfTaskTable(
-                company.tasks().stream().filter(task -> task.status() != TaskStatus.IS_COMPLETED).toList());
+                company.getTasks().stream().filter(task -> task.getStatus() != TaskStatus.IS_COMPLETED).toList());
     }
 
     private void showCompletedTasks() {
         CuteTable.printfTaskTable(
-                company.tasks().stream().filter(task -> task.status() == TaskStatus.IS_COMPLETED).toList());
+                company.getTasks().stream().filter(task -> task.getStatus() == TaskStatus.IS_COMPLETED).toList());
     }
 
     private void showTop3EffectiveEmployees() {
@@ -145,10 +146,12 @@ public class TerminalGame implements Runnable{
     @SneakyThrows
     private synchronized void saveProgress() {
         File file = new File(Resources.getProperty("savePath"));
-        if (file.exists())
-            file.delete();
-        file.createNewFile();
-        @Cleanup FileOutputStream fileOutputStream = new FileOutputStream(file);
+        if (!file.createNewFile()){
+            System.out.println("Не удалось сохранить прогресс");
+            return;
+        }
+
+        @Cleanup FileOutputStream fileOutputStream = new FileOutputStream(file, false);
         @Cleanup ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
         objectOutputStream.writeObject(company);
         objectOutputStream.flush();
@@ -162,6 +165,7 @@ public class TerminalGame implements Runnable{
             System.out.println("Сохранение не существует.");
             return;
         }
+
         @Cleanup FileInputStream fileInputStream  = new FileInputStream(file);
         @Cleanup ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         company = (Company) objectInputStream.readObject();
@@ -177,12 +181,12 @@ public class TerminalGame implements Runnable{
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("companyStatisticsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
         System.out.printf(bufferedReader.lines().collect(Collectors.joining("\n")) + "\n",
-                company.name(),
-                company.employees().size(),
-                company.tasks().size(),
-                company.tasks().stream().filter(task -> task.status() == TaskStatus.WAITING).count(),
-                company.tasks().stream().filter(task -> task.status() == TaskStatus.IN_PROGRESS).count(),
-                company.tasks().stream().filter(task -> task.status() == TaskStatus.IS_COMPLETED).count()
+                company.getName(),
+                company.getEmployees().size(),
+                company.getTasks().size(),
+                company.getTasks().stream().filter(task -> task.getStatus() == TaskStatus.WAITING).count(),
+                company.getTasks().stream().filter(task -> task.getStatus() == TaskStatus.IN_PROGRESS).count(),
+                company.getTasks().stream().filter(task -> task.getStatus() == TaskStatus.IS_COMPLETED).count()
         );
     }
 

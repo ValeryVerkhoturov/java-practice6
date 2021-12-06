@@ -1,10 +1,21 @@
 package com.company.objects;
 
+import lombok.Data;
+import lombok.NonNull;
+
 import java.io.Serializable;
 import java.time.Period;
 import java.util.List;
 
-public record Company(String name, List<Employee> employees, List<Task> tasks) implements Serializable {
-    public void passTime(Period period){
-    }
+@Data
+public class Company implements Serializable {
+
+    @NonNull
+    String name;
+
+    @NonNull
+    List<Employee> employees;
+
+    @NonNull
+    List<Task> tasks;
 }

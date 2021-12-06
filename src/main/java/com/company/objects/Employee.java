@@ -1,23 +1,33 @@
 package com.company.objects;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
+import lombok.Data;
+import lombok.NonNull;
 import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Optional;
 
-public record Employee(String firstName, String patronymic, String lastName, Date birthDate,
-                       String city, String position, Task task) implements Serializable {
+@Data
+@FieldNameConstants
+public class Employee implements Serializable {
+    @NonNull
+    String firstName;
 
-    public static class FieldNames {
-        public final static String firstName = "Имя";
-        public final static String patronymic = "Отчество";
-        public final static String lastName = "Фамилия";
-        public final static String birthDate = "Дата роджения";
-        public final static String city = "Город";
-        public final static String position = "Должность";
-        public final static String task = "Задача";
-    }
+    @NonNull
+    String patronymic;
+
+    @NonNull
+    String lastName;
+
+    @NonNull
+    Date birthDate;
+
+    @NonNull
+    String city;
+
+    @NonNull
+    String position;
+
+    @NonNull
+    Task task;
 }

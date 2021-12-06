@@ -1,6 +1,8 @@
 package com.company.view;
 
 import com.company.objects.Employee;
+import com.company.objects.NullEmployee;
+import com.company.objects.NullTask;
 import com.company.objects.Task;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
@@ -22,9 +24,9 @@ public class CuteTable {
     int SPACE_EMPLOYEE_POSITION = 40;
     int SPACE_EMPLOYEE_TASK = 40;
 
-    int SPACE_TASK_DESCRIPTION = 40;
-    int SPACE_TASK_PERIOD = 17;
-    int SPACE_TASK_PRICE = 15;
+    int SPACE_TASK_DESCRIPTION = 50;
+    int SPACE_TASK_PERIOD = 7;
+    int SPACE_TASK_PRICE = 6;
     int SPACE_TASK_STATUS = 10;
     int SAPCE_TASK_EMPLOYEE = 15;
 
@@ -59,26 +61,26 @@ public class CuteTable {
 
     private void printfEmployeeTableHead(String format){
         System.out.printf((format) + "\n",
-                Employee.FieldNames.firstName, Employee.FieldNames.patronymic, Employee.FieldNames.lastName,
-                Employee.FieldNames.birthDate, Employee.FieldNames.city, Employee.FieldNames.position,
-                Employee.FieldNames.task);
+                Employee.Fields.firstName, Employee.Fields.patronymic, Employee.Fields.lastName,
+                Employee.Fields.birthDate, Employee.Fields.city, Employee.Fields.position,
+                Employee.Fields.task);
     }
 
     private void printfEmployeeTableTail(List<Employee> employees, String format, SimpleDateFormat dateFormat){
         for (Employee employee : employees) {
             String task;
-            if (employee.task() == null)
+            if (employee.getTask() instanceof NullTask)
                 task = "Задания нет";
             else
-                task = employee.task().description();
+                task = employee.getTask().getDescription();
 
             System.out.printf(format + "\n",
-                    cutLongOutput(employee.firstName(), SPACE_EMPLOYEE_FIRST_NAME),
-                    cutLongOutput(employee.patronymic(), SPACE_EMPLOYEE_PATRONYMIC),
-                    cutLongOutput(employee.lastName(), SPACE_EMPLOYEE_LAST_NAME),
-                    cutLongOutput(dateFormat.format(employee.birthDate()), SPACE_EMPLOYEE_BIRTH_DATE),
-                    cutLongOutput(employee.city(), SPACE_EMPLOYEE_CITY),
-                    cutLongOutput(employee.position(), SPACE_EMPLOYEE_POSITION),
+                    cutLongOutput(employee.getFirstName(), SPACE_EMPLOYEE_FIRST_NAME),
+                    cutLongOutput(employee.getPatronymic(), SPACE_EMPLOYEE_PATRONYMIC),
+                    cutLongOutput(employee.getLastName(), SPACE_EMPLOYEE_LAST_NAME),
+                    cutLongOutput(dateFormat.format(employee.getBirthDate()), SPACE_EMPLOYEE_BIRTH_DATE),
+                    cutLongOutput(employee.getCity(), SPACE_EMPLOYEE_CITY),
+                    cutLongOutput(employee.getPosition(), SPACE_EMPLOYEE_POSITION),
                     cutLongOutput(task, SPACE_EMPLOYEE_TASK));
         }
     }
@@ -94,24 +96,24 @@ public class CuteTable {
 
     private void printfTaskTableHead(String format){
         System.out.printf((format) + "\n",
-                Task.FieldNames.description, Task.FieldNames.period, Task.FieldNames.price,
-                Task.FieldNames.status, Task.FieldNames.employee);
+                Task.Fields.description, Task.Fields.period, Task.Fields.price,
+                Task.Fields.status, Task.Fields.employee);
     }
 
     private void printfTaskTableTail(List<Task> tasks, String format){
         for (Task task : tasks) {
             String employee;
-            if (task.employee() == null)
+            if (task.getEmployee() instanceof NullEmployee)
                 employee = "Не назначен";
             else
-                employee = task.employee().lastName() + " " +
-                        task.employee().firstName().charAt(0) + ".";
+                employee = task.getEmployee().getLastName() + " " +
+                        task.getEmployee().getFirstName().charAt(0) + ".";
 
             System.out.printf(format + "\n",
-                    cutLongOutput(task.description(), SPACE_TASK_DESCRIPTION),
-                    cutLongOutput(task.period().getDays() + " д.", SPACE_TASK_PERIOD),
-                    task.price(),
-                    cutLongOutput(task.status().getName(), SPACE_TASK_STATUS),
+                    cutLongOutput(task.getDescription(), SPACE_TASK_DESCRIPTION),
+                    cutLongOutput(task.getPeriod().getDays() + " д.", SPACE_TASK_PERIOD),
+                    task.getPrice(),
+                    cutLongOutput(task.getStatus().name(), SPACE_TASK_STATUS),
                     cutLongOutput(employee, SAPCE_TASK_EMPLOYEE)
             );
         }
