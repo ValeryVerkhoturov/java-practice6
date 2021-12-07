@@ -3,17 +3,24 @@ package com.company.view;
 import com.company.Resources;
 import com.company.objects.*;
 import lombok.Cleanup;
+import lombok.CustomLog;
 import lombok.SneakyThrows;
 
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
 public class TerminalLoop implements Runnable {
 
     private Company company = Factory.getRandomCompany();
+
+    private final Logger logger = Logger.getLogger(TerminalLoop.class.getName());
 
     private static final String separator = Resources.getProperty("separator");
 
@@ -23,7 +30,8 @@ public class TerminalLoop implements Runnable {
     public void run() {
         try{
             System.out.println(separator);
-            setup();
+            setupLogger();
+            start();
             do{
                 System.out.println(separator);
                 System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
@@ -36,7 +44,16 @@ public class TerminalLoop implements Runnable {
     }
 
     @SneakyThrows
-    private void setup() {
+    private void setupLogger(){
+        logger.setUseParentHandlers(false);
+        SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
+        FileHandler fileHandler = new FileHandler(Resources.getProperty("logPath") + format.format(Calendar.getInstance().getTime()) + ".log");
+        fileHandler.setFormatter(new SimpleFormatter());
+        logger.addHandler(fileHandler);
+    }
+
+    @SneakyThrows
+    private void start() {
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("greetingsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -62,6 +79,7 @@ public class TerminalLoop implements Runnable {
     }
 
     private void executeCommand() {
+        logger.info(terminalCommand.name());
         switch (terminalCommand){
             case START -> {}
 
@@ -91,6 +109,7 @@ public class TerminalLoop implements Runnable {
         try{
             System.out.print("> ");
             int code = new Scanner(System.in).nextInt();
+            logger.info("> " + code);
             return Arrays.stream(TerminalCommand.values())
                     .filter(cmd -> cmd.getCode() == code)
                     .findFirst()
@@ -111,28 +130,43 @@ public class TerminalLoop implements Runnable {
         Employee.EmployeeBuilder employeeBuilder = Employee.builder();
 
         System.out.print(Employee.Fields.firstName + "> ");
-        employeeBuilder.firstName(scanner.nextLine());
+        String firstName = scanner.nextLine();
+        logger.info(Employee.Fields.firstName + "> " + firstName);
+        employeeBuilder.firstName(firstName);
 
         System.out.print(Employee.Fields.patronymic + "> ");
-        employeeBuilder.patronymic(scanner.nextLine());
+        String patronymic = scanner.nextLine();
+        logger.info(Employee.Fields.patronymic + "> " + patronymic);
+        employeeBuilder.patronymic(patronymic);
 
         System.out.print(Employee.Fields.lastName + "> ");
-        employeeBuilder.lastName(scanner.nextLine());
+        String lastName = scanner.nextLine();
+        logger.info(Employee.Fields.lastName + "> " + lastName);
+        employeeBuilder.lastName(lastName);
 
         Date birthDate = null;
+        String date = null;
         while (birthDate == null)
             try{
                 System.out.println("Пример даты: ДД MM ГГГГ");
                 System.out.print(Employee.Fields.birthDate + "> ");
-                birthDate = new SimpleDateFormat("dd MM yyyy").parse(scanner.nextLine());
-            } catch (ParseException ignore){}
+                date = scanner.nextLine();
+                birthDate = new SimpleDateFormat("dd MM yyyy").parse(date);
+            } catch (ParseException e){
+                logger.severe(Employee.Fields.birthDate + "> " + date);
+            }
+        logger.info(Employee.Fields.birthDate + "> " + date);
         employeeBuilder.birthDate(birthDate);
 
         System.out.print(Employee.Fields.city + "> ");
-        employeeBuilder.city(scanner.nextLine());
+        String city = scanner.nextLine();
+        logger.info(Employee.Fields.city + "> " + city);
+        employeeBuilder.city(city);
 
         System.out.print(Employee.Fields.position + "> ");
-        employeeBuilder.position(scanner.nextLine());
+        String position = scanner.nextLine();
+        logger.info(Employee.Fields.position + "> " + position);
+        employeeBuilder.position(position);
 
         employeeBuilder.task(NullTask.getInstance());
 
@@ -178,6 +212,7 @@ public class TerminalLoop implements Runnable {
         File file = new File(Resources.getProperty("savePath"));
         while (!file.createNewFile())
             if (!file.delete()) {
+                logger.severe("Не удалось сохранить прогресс.");
                 System.out.println("Не удалось сохранить прогресс.");
                 return;
             }
@@ -186,6 +221,7 @@ public class TerminalLoop implements Runnable {
         @Cleanup ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
         objectOutputStream.writeObject(company);
         objectOutputStream.flush();
+        logger.info("Сохранение прошло успешно.");
         System.out.println("Сохранение прошло успешно.");
     }
 
@@ -193,6 +229,7 @@ public class TerminalLoop implements Runnable {
     private synchronized void loadProgress() {
         File file = new File(Resources.getProperty("savePath"));
         if (!file.exists()){
+            logger.info("Сохранение не существует.");
             System.out.println("Сохранение не существует.");
             return;
         }
@@ -200,10 +237,12 @@ public class TerminalLoop implements Runnable {
         @Cleanup FileInputStream fileInputStream  = new FileInputStream(file);
         @Cleanup ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         company = (Company) objectInputStream.readObject();
+        logger.info("Загрузка прошла успешно.");
         System.out.println("Загрузка прошла успешно.");
     }
 
     private void unknownCommand(){
+        logger.info("Неизвестная команда");
         System.out.println("Сам понял, что написал?");
     }
 
@@ -229,5 +268,6 @@ public class TerminalLoop implements Runnable {
     }
 
     private void finish() {
+        logger.info("Выход из цикла с командами");
     }
 }

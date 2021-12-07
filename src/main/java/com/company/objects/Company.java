@@ -90,9 +90,6 @@ public class Company implements Serializable {
 
     private void minusEfficiencyDuration() {
         for (Employee employee : employeesEfficiency.keySet())
-            employeesEfficiency.get(employee).forEach(duration -> {
-                employeesEfficiency.get(employee).remove(duration);
-                employeesEfficiency.get(employee).add(duration.minusDays(1));
-            });
+            employeesEfficiency.get(employee).forEach(duration -> duration = duration.minusDays(1));
     }
 }
