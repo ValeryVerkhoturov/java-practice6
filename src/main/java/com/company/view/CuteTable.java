@@ -53,24 +53,24 @@ public class CuteTable {
 
     SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("dd/MM/yyyy");
 
-    public void printfEmployeeTable(List<Employee> employees){
+    public void printfEmployeeTable(List<Employee> employees) {
         printfEmployeeTableHead();
         employees.forEach(CuteTable::printfEmployeeTableRow);
     }
 
-    public void printfEmployeeTable(Employee employee){
+    public void printfEmployeeTable(Employee employee) {
         printfEmployeeTableHead();
         printfEmployeeTableRow(employee);
     }
 
-    private void printfEmployeeTableHead(){
+    private void printfEmployeeTableHead() {
         System.out.printf(FORMAT_EMPLOYEE_TABLE + "\n",
                 Employee.Fields.firstName, Employee.Fields.patronymic, Employee.Fields.lastName,
                 Employee.Fields.birthDate, Employee.Fields.city, Employee.Fields.position,
                 Employee.Fields.task);
     }
 
-    private void printfEmployeeTableRow(Employee employee){
+    private void printfEmployeeTableRow(Employee employee) {
         String task;
         if (employee.getTask() instanceof NullTask)
             task = "Задачи нет";
@@ -87,23 +87,23 @@ public class CuteTable {
                 cutLongOutput(task, SPACE_EMPLOYEE_TASK));
     }
 
-    public void printfTaskTable(List<Task> tasks){
+    public void printfTaskTable(List<Task> tasks) {
        printfTaskTableHead();
        tasks.forEach(CuteTable::printfTaskTableRow);
     }
 
-    public void printfTaskTable(Task task){
+    public void printfTaskTable(Task task) {
         printfTaskTableHead();
         printfTaskTableRow(task);
     }
 
-    private void printfTaskTableHead(){
+    private void printfTaskTableHead() {
         System.out.printf(FORMAT_TASK_TABLE + "\n",
                 Task.Fields.description, Task.Fields.period, Task.Fields.price,
                 Task.Fields.status, Task.Fields.employee);
     }
 
-    private void printfTaskTableRow(Task task){
+    private void printfTaskTableRow(Task task) {
         String employee;
         if (task.getEmployee() instanceof NullEmployee)
             employee = "Не назначен";
@@ -120,7 +120,7 @@ public class CuteTable {
         );
     }
 
-    private String cutLongOutput(String source, int space){
+    private String cutLongOutput(String source, int space) {
         if (source.length() <= space)
             return source;
         return source.substring(0, space - 3) + "..";

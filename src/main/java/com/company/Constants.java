@@ -19,7 +19,7 @@ public enum Constants {
     @Getter
     private final int points;
 
-    Constants(int points){
+    Constants(int points) {
         this.points = points;
     }
 }

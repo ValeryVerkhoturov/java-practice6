@@ -13,7 +13,7 @@ public enum TaskStatus implements Serializable {
     @Getter
     private String name;
 
-    TaskStatus(String name){
+    TaskStatus(String name) {
         this.name = name;
     }
 }

@@ -29,7 +29,7 @@ public enum TerminalCommand {
     @Getter
     private final int code;
 
-    TerminalCommand(int code){
+    TerminalCommand(int code) {
         this.code = code;
     }
 }

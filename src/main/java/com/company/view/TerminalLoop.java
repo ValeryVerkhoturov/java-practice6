@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TerminalLoop implements Runnable{
+public class TerminalLoop implements Runnable {
 
     private Company company = Factory.getRandomCompany();
 
@@ -36,7 +36,7 @@ public class TerminalLoop implements Runnable{
     }
 
     @SneakyThrows
-    private void setup(){
+    private void setup() {
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("greetingsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -47,7 +47,7 @@ public class TerminalLoop implements Runnable{
     }
 
     @SneakyThrows
-    private TerminalCommand loop(){
+    private TerminalCommand loop() {
         System.out.println(separator);
         executeCommand();
         if (terminalCommand != TerminalCommand.START)
@@ -61,7 +61,7 @@ public class TerminalLoop implements Runnable{
         return readTerminalCommand();
     }
 
-    private void executeCommand(){
+    private void executeCommand() {
         switch (terminalCommand){
             case START -> {}
 
@@ -87,7 +87,7 @@ public class TerminalLoop implements Runnable{
         }
     }
 
-    private TerminalCommand readTerminalCommand(){
+    private TerminalCommand readTerminalCommand() {
         try{
             System.out.print("> ");
             int code = new Scanner(System.in).nextInt();
@@ -206,7 +206,7 @@ public class TerminalLoop implements Runnable{
     }
 
     @SneakyThrows
-    private synchronized void printCompanyStatistics(){
+    private synchronized void printCompanyStatistics() {
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("companyStatisticsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
         System.out.printf(bufferedReader.lines().collect(Collectors.joining("\n")) + "\n",
@@ -220,12 +220,12 @@ public class TerminalLoop implements Runnable{
     }
 
     @SneakyThrows
-    private synchronized void printCommands(){
+    private synchronized void printCommands() {
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("commandsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
         System.out.println(bufferedReader.lines().collect(Collectors.joining("\n")));
     }
 
-    private void finish(){
+    private void finish() {
     }
 }

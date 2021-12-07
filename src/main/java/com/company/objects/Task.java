@@ -25,7 +25,7 @@ public class Task implements Serializable {
 
     Employee employee;
 
-    public Employee getEmployee(){
+    public Employee getEmployee() {
         if (employee == null)
             return NullEmployee.getInstance();
         return employee;

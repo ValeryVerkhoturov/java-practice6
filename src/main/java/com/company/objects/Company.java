@@ -22,29 +22,29 @@ public class Company implements Serializable {
 
     Map<Employee, List<Period>> employeesEfficiency = new HashMap<>();
 
-    public void addEmployee(Employee employee){
+    public void addEmployee(Employee employee) {
         if (!(employees instanceof ArrayList))
             employees = new ArrayList<>(employees);
         employees.add(employee);
     }
 
-    public void addTask(Task task){
+    public void addTask(Task task) {
         if (!(tasks instanceof ArrayList))
             tasks = new ArrayList<>(tasks);
         tasks.add(task);
     }
 
-    public void passNDays(int days){
+    public void passNDays(int days) {
         IntStream.range(0, days).forEach(i -> passOneDay());
     }
 
-    private void passOneDay(){
+    private void passOneDay() {
         removeCompletedTasks();
         addTaskToFreeEmployee();
         minusTaskPeriod();
     }
 
-    private void removeCompletedTasks(){
+    private void removeCompletedTasks() {
         employees.stream().filter(employee -> !(employee.getTask() instanceof NullTask))
                 .filter(employee -> employee.getTask().getPeriod().getDays() == 0).forEach(
                         employee -> {
@@ -59,7 +59,7 @@ public class Company implements Serializable {
                 );
     }
 
-    private void addTaskToFreeEmployee(){
+    private void addTaskToFreeEmployee() {
         employees.stream().filter(employee -> employee.getTask() instanceof NullTask).forEach(
                 employee -> {
                     Task task = tasks.stream()
@@ -71,7 +71,7 @@ public class Company implements Serializable {
         );
     }
 
-    private void minusTaskPeriod(){
+    private void minusTaskPeriod() {
         tasks.stream().filter(task -> !(task instanceof NullTask))
                 .filter(task -> task.getStatus() != TaskStatus.IS_COMPLETED)
                 .forEach(task -> task.setPeriod(task.getPeriod().minusDays(1)));

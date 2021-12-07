@@ -12,6 +12,7 @@ import java.util.Date;
 @FieldNameConstants
 @Builder
 public class Employee implements Serializable {
+
     @NonNull
     String firstName;
 
