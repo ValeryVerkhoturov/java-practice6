@@ -4,6 +4,7 @@ import com.company.Resources;
 import com.company.objects.*;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
+import lombok.extern.java.Log;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -13,11 +14,10 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
+@Log
 public class TerminalLoop implements Runnable {
 
     private Company company = Factory.getRandomCompany();
-
-    private final Logger logger = Logger.getLogger(TerminalLoop.class.getName());
 
     private static final String separator = Resources.getProperty("separator");
 
@@ -42,13 +42,13 @@ public class TerminalLoop implements Runnable {
 
     @SneakyThrows
     private void setupLogger(){
-        logger.setUseParentHandlers(false);
+        log.setUseParentHandlers(false);
 
         SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
         FileHandler fileHandler = new FileHandler(Resources.getProperty("logPath") + format.format(Calendar.getInstance().getTime()) + ".log");
         fileHandler.setFormatter(new SimpleFormatter());
 
-        logger.addHandler(fileHandler);
+        log.addHandler(fileHandler);
     }
 
     @SneakyThrows
@@ -78,7 +78,7 @@ public class TerminalLoop implements Runnable {
     }
 
     private void executeCommand() {
-        logger.info(terminalCommand.name());
+        log.info(terminalCommand.name());
         switch (terminalCommand){
             case START -> {}
 
@@ -108,7 +108,7 @@ public class TerminalLoop implements Runnable {
         try{
             System.out.print("> ");
             int code = new Scanner(System.in).nextInt();
-            logger.info("Введена команда: " + code);
+            log.info("Введена команда: " + code);
             return Arrays.stream(TerminalCommand.values())
                     .filter(cmd -> cmd.getCode() == code)
                     .findFirst()
@@ -126,12 +126,12 @@ public class TerminalLoop implements Runnable {
     private void addNewEmployeeFromConsole() {
         Employee.EmployeeBuilder employeeBuilder = Employee.builder();
 
-        employeeBuilder.firstName(TerminalReader.readFirstName(logger));
-        employeeBuilder.patronymic(TerminalReader.readPatronymic(logger));
-        employeeBuilder.lastName(TerminalReader.readLastName(logger));
-        employeeBuilder.birthDate(TerminalReader.readBirthDate(logger));
-        employeeBuilder.city(TerminalReader.readCity(logger));
-        employeeBuilder.position(TerminalReader.readPosition(logger));
+        employeeBuilder.firstName(TerminalReader.readFirstName(log));
+        employeeBuilder.patronymic(TerminalReader.readPatronymic(log));
+        employeeBuilder.lastName(TerminalReader.readLastName(log));
+        employeeBuilder.birthDate(TerminalReader.readBirthDate(log));
+        employeeBuilder.city(TerminalReader.readCity(log));
+        employeeBuilder.position(TerminalReader.readPosition(log));
         employeeBuilder.task(NullTask.getInstance());
 
         company.addEmployee(employeeBuilder.build());
@@ -176,7 +176,7 @@ public class TerminalLoop implements Runnable {
         File file = new File(Resources.getProperty("savePath"));
         while (!file.createNewFile())
             if (!file.delete()) {
-                logger.severe("Не удалось сохранить прогресс.");
+                log.severe("Не удалось сохранить прогресс.");
                 System.out.println("Не удалось сохранить прогресс.");
                 return;
             }
@@ -185,7 +185,7 @@ public class TerminalLoop implements Runnable {
         @Cleanup ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
         objectOutputStream.writeObject(company);
         objectOutputStream.flush();
-        logger.info("Сохранение прошло успешно.");
+        log.info("Сохранение прошло успешно.");
         System.out.println("Сохранение прошло успешно.");
     }
 
@@ -193,7 +193,7 @@ public class TerminalLoop implements Runnable {
     private synchronized void loadProgress() {
         File file = new File(Resources.getProperty("savePath"));
         if (!file.exists()){
-            logger.info("Сохранение не существует.");
+            log.info("Сохранение не существует.");
             System.out.println("Сохранение не существует.");
             return;
         }
@@ -201,12 +201,12 @@ public class TerminalLoop implements Runnable {
         @Cleanup FileInputStream fileInputStream  = new FileInputStream(file);
         @Cleanup ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         company = (Company) objectInputStream.readObject();
-        logger.info("Загрузка прошла успешно.");
+        log.info("Загрузка прошла успешно.");
         System.out.println("Загрузка прошла успешно.");
     }
 
     private void unknownCommand(){
-        logger.info("Неизвестная команда");
+        log.info("Неизвестная команда");
         System.out.println("Сам понял, что написал?");
     }
 
@@ -232,6 +232,6 @@ public class TerminalLoop implements Runnable {
     }
 
     private void finish() {
-        logger.info("Выход из цикла с командами");
+        log.info("Выход из цикла с командами");
     }
 }

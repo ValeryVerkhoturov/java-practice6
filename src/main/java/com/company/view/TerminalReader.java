@@ -1,7 +1,9 @@
 package com.company.view;
 
 import com.company.objects.Employee;
+import lombok.CustomLog;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
