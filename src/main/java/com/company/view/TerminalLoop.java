@@ -3,14 +3,11 @@ package com.company.view;
 import com.company.Resources;
 import com.company.objects.*;
 import lombok.Cleanup;
-import lombok.CustomLog;
 import lombok.SneakyThrows;
 
 import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -46,9 +43,11 @@ public class TerminalLoop implements Runnable {
     @SneakyThrows
     private void setupLogger(){
         logger.setUseParentHandlers(false);
+
         SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
         FileHandler fileHandler = new FileHandler(Resources.getProperty("logPath") + format.format(Calendar.getInstance().getTime()) + ".log");
         fileHandler.setFormatter(new SimpleFormatter());
+
         logger.addHandler(fileHandler);
     }
 
@@ -109,7 +108,7 @@ public class TerminalLoop implements Runnable {
         try{
             System.out.print("> ");
             int code = new Scanner(System.in).nextInt();
-            logger.info("> " + code);
+            logger.info("Введена команда: " + code);
             return Arrays.stream(TerminalCommand.values())
                     .filter(cmd -> cmd.getCode() == code)
                     .findFirst()
@@ -124,50 +123,15 @@ public class TerminalLoop implements Runnable {
         System.out.println("Прошло дней: " + days);
     }
 
-    @SneakyThrows
     private void addNewEmployeeFromConsole() {
-        Scanner scanner = new Scanner(System.in);
         Employee.EmployeeBuilder employeeBuilder = Employee.builder();
 
-        System.out.print(Employee.Fields.firstName + "> ");
-        String firstName = scanner.nextLine();
-        logger.info(Employee.Fields.firstName + "> " + firstName);
-        employeeBuilder.firstName(firstName);
-
-        System.out.print(Employee.Fields.patronymic + "> ");
-        String patronymic = scanner.nextLine();
-        logger.info(Employee.Fields.patronymic + "> " + patronymic);
-        employeeBuilder.patronymic(patronymic);
-
-        System.out.print(Employee.Fields.lastName + "> ");
-        String lastName = scanner.nextLine();
-        logger.info(Employee.Fields.lastName + "> " + lastName);
-        employeeBuilder.lastName(lastName);
-
-        Date birthDate = null;
-        String date = null;
-        while (birthDate == null)
-            try{
-                System.out.println("Пример даты: ДД MM ГГГГ");
-                System.out.print(Employee.Fields.birthDate + "> ");
-                date = scanner.nextLine();
-                birthDate = new SimpleDateFormat("dd MM yyyy").parse(date);
-            } catch (ParseException e){
-                logger.severe(Employee.Fields.birthDate + "> " + date);
-            }
-        logger.info(Employee.Fields.birthDate + "> " + date);
-        employeeBuilder.birthDate(birthDate);
-
-        System.out.print(Employee.Fields.city + "> ");
-        String city = scanner.nextLine();
-        logger.info(Employee.Fields.city + "> " + city);
-        employeeBuilder.city(city);
-
-        System.out.print(Employee.Fields.position + "> ");
-        String position = scanner.nextLine();
-        logger.info(Employee.Fields.position + "> " + position);
-        employeeBuilder.position(position);
-
+        employeeBuilder.firstName(TerminalReader.readFirstName(logger));
+        employeeBuilder.patronymic(TerminalReader.readPatronymic(logger));
+        employeeBuilder.lastName(TerminalReader.readLastName(logger));
+        employeeBuilder.birthDate(TerminalReader.readBirthDate(logger));
+        employeeBuilder.city(TerminalReader.readCity(logger));
+        employeeBuilder.position(TerminalReader.readPosition(logger));
         employeeBuilder.task(NullTask.getInstance());
 
         company.addEmployee(employeeBuilder.build());

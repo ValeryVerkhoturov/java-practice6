@@ -8,7 +8,6 @@ import java.time.Duration;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Data
 public class Company implements Serializable {
@@ -61,6 +60,7 @@ public class Company implements Serializable {
                         employee -> {
                             Task task = employee.getTask();
                             task.setStatus(TaskStatus.IS_COMPLETED);
+                            task.setPeriod(Period.ZERO);
                             employee.setTask(NullTask.getInstance());
 
                             List<Duration> employeeEfficiency = employeesEfficiency.getOrDefault(employee, new ArrayList<>());
