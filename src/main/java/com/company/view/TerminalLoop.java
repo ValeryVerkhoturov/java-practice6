@@ -77,7 +77,7 @@ public class TerminalLoop implements Runnable {
             case SHOW_UNCOMPLETED_TASKS -> showUncompletedTasks();
             case SHOW_COMPLETED_TASKS -> showCompletedTasks();
 
-            case SHOW_TOP_3_EFFECTIVE_EMPLOYEES -> showTop3EffectiveEmployees();
+            case SHOW_TOP_3_EFFECTIVE_EMPLOYEES_LAST_30_DAYS -> showTopEffectiveEmployeesLastNDays(3, 30);
             case SHOW_TASK_WITH_TOP_PRICE -> showTaskWithTopPrice();
 
             case SAVE_PROGRESS -> saveProgress();
@@ -163,8 +163,10 @@ public class TerminalLoop implements Runnable {
                 company.getTasks().stream().filter(task -> task.getStatus() == TaskStatus.IS_COMPLETED).toList());
     }
 
-    private void showTop3EffectiveEmployees() {
-        //TODO
+    private void showTopEffectiveEmployeesLastNDays(int top, int days) {
+        Map<Employee, Integer> efficiency = company.getEmloyeesEfficiencyLastNDays(days);
+        CuteTable.printfEmployeeTable(
+                efficiency.keySet().stream().sorted(Comparator.comparing(efficiency::get)).limit(top).toList());
     }
 
     private void showTaskWithTopPrice() {

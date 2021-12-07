@@ -54,6 +54,10 @@ public class CuteTable {
     SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("dd/MM/yyyy");
 
     public void printfEmployeeTable(List<Employee> employees) {
+        if (employees.isEmpty()){
+            System.out.println("Выборки нет");
+            return;
+        }
         printfEmployeeTableHead();
         employees.forEach(CuteTable::printfEmployeeTableRow);
     }
@@ -88,8 +92,12 @@ public class CuteTable {
     }
 
     public void printfTaskTable(List<Task> tasks) {
-       printfTaskTableHead();
-       tasks.forEach(CuteTable::printfTaskTableRow);
+        if (tasks.isEmpty()){
+            System.out.println("Выборки нет");
+            return;
+        }
+        printfTaskTableHead();
+        tasks.forEach(CuteTable::printfTaskTableRow);
     }
 
     public void printfTaskTable(Task task) {

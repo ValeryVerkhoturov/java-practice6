@@ -2,6 +2,7 @@ package com.company.objects;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.experimental.FieldNameConstants;
 
@@ -9,8 +10,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@FieldNameConstants
 @Builder
+@FieldNameConstants
 public class Employee implements Serializable {
 
     @NonNull
@@ -31,6 +32,12 @@ public class Employee implements Serializable {
     @NonNull
     String position;
 
-    @NonNull
+    @EqualsAndHashCode.Exclude
     Task task;
+
+    public Task getTask(){
+        if (task == null)
+            return NullTask.getInstance();
+        return task;
+    }
 }

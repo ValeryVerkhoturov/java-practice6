@@ -1,6 +1,7 @@
 package com.company.objects;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.experimental.FieldNameConstants;
 
@@ -23,6 +24,7 @@ public class Task implements Serializable {
     @NonNull
     TaskStatus status;
 
+    @EqualsAndHashCode.Exclude
     Employee employee;
 
     public Employee getEmployee() {

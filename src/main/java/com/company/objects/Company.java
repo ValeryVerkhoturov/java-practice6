@@ -4,9 +4,11 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Data
 public class Company implements Serializable {
@@ -20,7 +22,7 @@ public class Company implements Serializable {
     @NonNull
     List<Task> tasks;
 
-    Map<Employee, List<Period>> employeesEfficiency = new HashMap<>();
+    Map<Employee, List<Duration>> employeesEfficiency = new HashMap<>();
 
     public void addEmployee(Employee employee) {
         if (!(employees instanceof ArrayList))
@@ -42,18 +44,27 @@ public class Company implements Serializable {
         removeCompletedTasks();
         addTaskToFreeEmployee();
         minusTaskPeriod();
+        minusEfficiencyDuration();
+    }
+
+    public Map<Employee, Integer> getEmloyeesEfficiencyLastNDays(int days) {
+        HashMap<Employee, Integer> efficiency = new HashMap<>();
+        for (Employee employee : employeesEfficiency.keySet())
+            efficiency.put(employee, (int) employeesEfficiency.get(employee).stream()
+                    .filter(duration -> duration.compareTo(Duration.ofDays(days)) <= 0).count());
+        return efficiency;
     }
 
     private void removeCompletedTasks() {
         employees.stream().filter(employee -> !(employee.getTask() instanceof NullTask))
-                .filter(employee -> employee.getTask().getPeriod().getDays() == 0).forEach(
+                .filter(employee -> employee.getTask().getPeriod().getDays() <= 0).forEach(
                         employee -> {
                             Task task = employee.getTask();
                             task.setStatus(TaskStatus.IS_COMPLETED);
                             employee.setTask(NullTask.getInstance());
 
-                            List<Period> employeeEfficiency = employeesEfficiency.getOrDefault(employee, new ArrayList<>());
-                            employeeEfficiency.add(Period.ZERO);
+                            List<Duration> employeeEfficiency = employeesEfficiency.getOrDefault(employee, new ArrayList<>());
+                            employeeEfficiency.add(Duration.ZERO);
                             employeesEfficiency.put(employee, employeeEfficiency);
                         }
                 );
@@ -75,5 +86,13 @@ public class Company implements Serializable {
         tasks.stream().filter(task -> !(task instanceof NullTask))
                 .filter(task -> task.getStatus() != TaskStatus.IS_COMPLETED)
                 .forEach(task -> task.setPeriod(task.getPeriod().minusDays(1)));
+    }
+
+    private void minusEfficiencyDuration() {
+        for (Employee employee : employeesEfficiency.keySet())
+            employeesEfficiency.get(employee).forEach(duration -> {
+                employeesEfficiency.get(employee).remove(duration);
+                employeesEfficiency.get(employee).add(duration.minusDays(1));
+            });
     }
 }

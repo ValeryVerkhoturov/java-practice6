@@ -13,8 +13,8 @@ public enum Constants {
     MIN_EMPLOYEE_AMMOUNT(5),
     MAX_EMPLOEE_AMMOUNT(30),
 
-    MIN_TASK_AMMOUNT(10),
-    MAX_TASK_AMMOUNT(40);
+    MIN_TASK_AMMOUNT(100),
+    MAX_TASK_AMMOUNT(200);
 
     @Getter
     private final int points;
