@@ -16,7 +16,7 @@ public class SaveLoadProgress {
     public synchronized void saveProgress(Company company, Logger log) {
         if (!new File(Resources.getProperty("savePath")).mkdirs())
             log.severe("Директория не создана");
-        File file = new File(Resources.getProperty("savePath") + Resources.getProperty("saveFileName"));
+        File file = new File(Resources.getProperty("savePath") + Resources.getProperty("saveFile"));
         while (!file.createNewFile())
             if (!file.delete()) {
                 log.severe("Не удалось сохранить прогресс.");
@@ -36,7 +36,7 @@ public class SaveLoadProgress {
     public synchronized Optional<Company> loadProgress(Logger log) {
         if (!new File(Resources.getProperty("savePath")).mkdirs())
             log.severe("Директория не создана");
-        File file = new File(Resources.getProperty("savePath") + Resources.getProperty("saveFileName"));
+        File file = new File(Resources.getProperty("savePath") + Resources.getProperty("saveFile"));
         if (!file.exists()){
             log.info("Сохранение не существует.");
             System.out.println("Сохранение не существует.");

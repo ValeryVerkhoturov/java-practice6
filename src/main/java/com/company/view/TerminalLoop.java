@@ -45,8 +45,8 @@ public class TerminalLoop implements Runnable {
         log.setUseParentHandlers(false);
 
         SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
-        if (new File(Resources.getProperty("logPath")).mkdirs())
-            throw new Exception("Директория не создана");
+        if (!new File(Resources.getProperty("logPath")).mkdirs())
+            log.severe("Директория не создана");
 
         FileHandler fileHandler = new FileHandler(Resources.getProperty("logPath") + format.format(Calendar.getInstance().getTime()) + ".log");
         fileHandler.setFormatter(new SimpleFormatter());
@@ -184,7 +184,7 @@ public class TerminalLoop implements Runnable {
 
     private void unknownCommand(){
         log.severe("Неизвестная команда");
-        System.out.println("Сам понял, что написал?");
+        System.out.println("Неизвестная команда.");
     }
 
     @SneakyThrows

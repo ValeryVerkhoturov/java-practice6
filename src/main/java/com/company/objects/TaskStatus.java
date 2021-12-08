@@ -11,7 +11,7 @@ public enum TaskStatus implements Serializable {
     IS_COMPLETED("Завершена");
 
     @Getter
-    private String name;
+    private final String name;
 
     TaskStatus(String name) {
         this.name = name;
