@@ -1,6 +1,7 @@
 package com.company.view;
 
 import com.company.Resources;
+import com.company.SaveLoadProgress;
 import com.company.objects.*;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -10,7 +11,6 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.FileHandler;
-import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
@@ -45,6 +45,9 @@ public class TerminalLoop implements Runnable {
         log.setUseParentHandlers(false);
 
         SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
+        if (new File(Resources.getProperty("logPath")).mkdirs())
+            throw new Exception("Директория не создана");
+
         FileHandler fileHandler = new FileHandler(Resources.getProperty("logPath") + format.format(Calendar.getInstance().getTime()) + ".log");
         fileHandler.setFormatter(new SimpleFormatter());
 
@@ -52,7 +55,7 @@ public class TerminalLoop implements Runnable {
     }
 
     @SneakyThrows
-    private void start() {
+    private synchronized void start() {
         @Cleanup FileReader fileReader = new FileReader(Resources.getProperty("greetingsPath"));
         @Cleanup BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -171,42 +174,16 @@ public class TerminalLoop implements Runnable {
         CuteTable.printfTaskTable(company.getTasks().stream().max(Comparator.comparing(Task::getPrice)).orElse(NullTask.getInstance()));
     }
 
-    @SneakyThrows
-    private synchronized void saveProgress() {
-        File file = new File(Resources.getProperty("savePath"));
-        while (!file.createNewFile())
-            if (!file.delete()) {
-                log.severe("Не удалось сохранить прогресс.");
-                System.out.println("Не удалось сохранить прогресс.");
-                return;
-            }
-
-        @Cleanup FileOutputStream fileOutputStream = new FileOutputStream(file, false);
-        @Cleanup ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        objectOutputStream.writeObject(company);
-        objectOutputStream.flush();
-        log.info("Сохранение прошло успешно.");
-        System.out.println("Сохранение прошло успешно.");
+    private void saveProgress() {
+        SaveLoadProgress.saveProgress(company, log);
     }
 
-    @SneakyThrows
-    private synchronized void loadProgress() {
-        File file = new File(Resources.getProperty("savePath"));
-        if (!file.exists()){
-            log.info("Сохранение не существует.");
-            System.out.println("Сохранение не существует.");
-            return;
-        }
-
-        @Cleanup FileInputStream fileInputStream  = new FileInputStream(file);
-        @Cleanup ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        company = (Company) objectInputStream.readObject();
-        log.info("Загрузка прошла успешно.");
-        System.out.println("Загрузка прошла успешно.");
+    private void loadProgress() {
+        SaveLoadProgress.loadProgress(log).ifPresent(c -> company = c);
     }
 
     private void unknownCommand(){
-        log.info("Неизвестная команда");
+        log.severe("Неизвестная команда");
         System.out.println("Сам понял, что написал?");
     }
 

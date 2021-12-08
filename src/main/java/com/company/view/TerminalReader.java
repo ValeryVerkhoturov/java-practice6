@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 @UtilityClass
 public class TerminalReader {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public String readFirstName(Logger logger){
         System.out.print(Employee.Fields.firstName + "> ");
