@@ -8,6 +8,7 @@ import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Optional;
 
 @Data
 @Builder
@@ -36,8 +37,6 @@ public class Employee implements Serializable {
     Task task;
 
     public Task getTask(){
-        if (task == null)
-            return NullTask.getInstance();
-        return task;
+        return Optional.ofNullable(task).orElse(NullTask.getInstance());
     }
 }
